@@ -1,0 +1,14 @@
+{
+    "builtin": "False",
+    "default_enabled": "True",
+    "type": "extension",
+    "rocket_mode_compatible": "False",
+    "name": "vakc.extension",
+    "description": "Revit API command by vakc base on pyrevit",
+    "author": "vakc",
+    "author_profile": "https://github.com/vakc",
+    "url": "https://github.com/vakc/vakc.extension.git",
+    "website": "https://www.youtube.com/channel/UC_7LANHTZ85Jy92D_KdoUZQ",
+    "image": "",
+    "dependencies": []
+}
