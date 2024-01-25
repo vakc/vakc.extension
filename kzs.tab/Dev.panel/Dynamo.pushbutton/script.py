@@ -8,7 +8,7 @@ import sys
 
 import clr
 clr.AddReference('ProtoGeometry')
-from Autodesk.DesignScript.Geometry import *
+from Autodesk.DesignScript.Geometry import Point
 
 clr.AddReference('RevitNodes')
 import Revit
@@ -20,10 +20,10 @@ import RevitServices
 from RevitServices.Persistence import DocumentManager
 from RevitServices.Transactions import TransactionManager
 
-# clr.AddReference("RevitAPI")
-#
-# import Autodesk
-# from Autodesk.Revit.DB import *
+clr.AddReference("RevitAPI")
+
+import Autodesk
+from Autodesk.Revit.DB import FilteredElementCollector
 
 Point = Point.ByCoordinates(0,0,0)
 Point2 = Point.ByCoordinates(100,0,0)
