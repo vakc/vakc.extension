@@ -27,8 +27,10 @@ doc   = __revit__.ActiveUIDocument.Document
 uidoc = __revit__.ActiveUIDocument
 app   = __revit__.Application
 
+path  = forms.ask_for_string(default='C:\Users\USER\Desktop',prompt='Enter csv save path:',title='Option Creator')
 
-csv_file_path = r'C:\Users\USER\Desktop\data.csv'
+
+csv_file_path = r'{}\data.csv'.format(path)
 
 
 with forms.WarningBar(title='Pick an Element:'):
@@ -82,7 +84,7 @@ for type_info in column_types_info.values():
     print('.Height:                     {} m'.format(type_info['column_all_height_1']))
     print('.Height:             {} m'.format(type_info['column_all_height_2']))
 
-csv_file_path = 'C:\Users\USER\Desktop\data.csv'
+csv_file_path = '{}\data.csv'.format(path)
 
 with io.open(csv_file_path, 'w', newline='', encoding='utf-8-sig') as csv_file:
     fieldnames = ['Column Type Name', '', '', '', '']

@@ -99,7 +99,11 @@ active_view = doc.ActiveView
 
 # Select the imported DWG file and create two groups: one for polylines and another for circles.
 
-cad_import = FilteredElementCollector(doc).OfClass(ImportInstance).WhereElementIsNotElementType().ToElementIds()
+with forms.WarningBar(title='Pick an Element:'):
+    cad = revit.pick_element()
+    cad_import = List[ElementId]()
+    cad_import.Add(cad.Id)
+
 
 pline = []
 circle = []
@@ -194,27 +198,29 @@ try:
 
 
         if Layer == "3R":
-            O1 = polyLine.ToProtoType()
-            P1 = O1.Points
+            try:
+                O1 = polyLine.ToProtoType()
+                P1 = O1.Points
 
-            from Autodesk.Revit.DB import Line
+                from Autodesk.Revit.DB import Line
 
-            RP1 = [value.ToRevitType() for value in P1]
-            curveloop = create_profile(RP1)
-            options = SolidOptions(ElementId.InvalidElementId, ElementId.InvalidElementId)
-            list_boundaries = List[CurveLoop]()
-            list_boundaries.Add(curveloop)
+                RP1 = [value.ToRevitType() for value in P1]
+                curveloop = create_profile(RP1)
+                options = SolidOptions(ElementId.InvalidElementId, ElementId.InvalidElementId)
+                list_boundaries = List[CurveLoop]()
+                list_boundaries.Add(curveloop)
 
-            cubic = GeometryCreationUtilities.CreateExtrusionGeometry(list_boundaries, XYZ.BasisZ, 10400 / 304.8)
+                cubic = GeometryCreationUtilities.CreateExtrusionGeometry(list_boundaries, XYZ.BasisZ, 10400 / 304.8)
 
-            with Transaction(doc, __title__) as t:
+                with Transaction(doc, __title__) as t:
+                    t.Start()
 
-                t.Start()
+                    direct_shape = DirectShape.CreateElement(doc, ElementId(BuiltInCategory.OST_GenericModel))
+                    direct_shape.SetShape([cubic])
 
-                direct_shape = DirectShape.CreateElement(doc, ElementId(BuiltInCategory.OST_GenericModel))
-                direct_shape.SetShape([cubic])
-
-                t.Commit()
+                    t.Commit()
+            except:
+                pass
 
 
         if Layer == "4R":
@@ -380,30 +386,35 @@ for obj in circle:
         arc_center = obj.Center
         with Transaction(doc, __title__) as t:
             t.Start()
+
             small_tree = get_type_by_name("Comman Apple - 6.0 Meters")
             if small_tree and not small_tree.IsActive:
                 small_tree.Activate()
+
+            doc.Create.NewFamilyInstance(arc_center, small_tree, StructuralType.NonStructural)
+            t.Commit()
+
+    if Layer == "maple tree":
+        arc_center = obj.Center
+        with Transaction(doc, __title__) as t:
+            t.Start()
 
             mid_tree = get_type_by_name("Red Maple - 9 Meters")
             if mid_tree and not mid_tree.IsActive:
                 mid_tree.Activate()
 
-            big_tree = get_type_by_name("Scarlet Oak - 12.5 Meters")
-            if big_tree and not big_tree.IsActive:
-                big_tree.Activate()
-
-            doc.Create.NewFamilyInstance(arc_center, small_tree, StructuralType.NonStructural)
-            t.Commit()
-    if Layer == "maple tree":
-        arc_center = obj.Center
-        with Transaction(doc, __title__) as t:
-            t.Start()
             doc.Create.NewFamilyInstance(arc_center, mid_tree, StructuralType.NonStructural)
             t.Commit()
+
     if Layer == "oak tree":
         arc_center = obj.Center
         with Transaction(doc, __title__) as t:
             t.Start()
+
+            big_tree = get_type_by_name("Scarlet Oak - 12.5 Meters")
+            if big_tree and not big_tree.IsActive:
+                big_tree.Activate()
+
             doc.Create.NewFamilyInstance(arc_center, big_tree, StructuralType.NonStructural)
             t.Commit()
 

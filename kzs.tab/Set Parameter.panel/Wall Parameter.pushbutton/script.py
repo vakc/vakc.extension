@@ -145,12 +145,9 @@ t = Transaction(doc, 'Writing ElementIds to Mark Parameter of Walls.')
 
 t.Start()
 
-all_walls = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Walls).WhereElementIsNotElementType().ToElements()
-
-for wall in all_walls:
-    wall_mark = wall.get_Parameter(BuiltInParameter.ALL_MODEL_MARK)
-    wall_mark.Set(str(wall.Id))
-    print(wall.Id)
+wall_mark = element.get_Parameter(BuiltInParameter.ALL_MODEL_MARK)
+wall_mark.Set(str(element.Id))
+print(element.Id)
 
 t.Commit()
 
